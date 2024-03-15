@@ -1,0 +1,206 @@
+📦 files 🏠
+📦 sockets 🏠
+📦 mime_types 🏠
+
+🏁 🍇
+
+    8888 ➡️ PORT  💭 set listening port number
+
+    🍺🆕🏄 PORT❗️ ➡️ SERVER  💭 create server socket
+    🔤./html/🔤 ➡️ WEB_ROOT  💭 set the web root location
+    🆕🤡❗️ ➡️ mime_types  💭 mime type parser
+
+    😀 🔤Server running on port 🧲PORT🧲🔤 ❗
+
+    🍇🎍🥡 ➡️ 🔡
+        💭 form html error 404 page
+        🔤<html>
+<head><title>404 Not Found</title></head>
+<body>
+<center><h1>404 Not Found</h1></center>
+<hr><center>Emojicode Engine/0.1a (Linux)</center>
+</body>
+</html>🔤 ➡️ error_page
+        
+        ↩️ 🔤HTTP/1.1 404 Not Found❌r❌nContent-Type: text/html❌r❌n❌r❌n🧲error_page🧲🔤
+    🍉 ➡️ error_404_page
+
+    🍇🎍🥡 ➡️ 🔡
+        💭 form html error 400 page
+        🔤<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+<hr><center>Emojicode Engine/0.1a (Linux)</center>
+</body>
+</html>🔤 ➡️ error_page
+        
+        ↩️ 🔤HTTP/1.1 400 Bad Request❌r❌nContent-Type: text/html❌r❌n❌r❌n🧲error_page🧲🔤
+    🍉 ➡️ error_400_page
+
+        🍇🎍🥡 ➡️ 🔡
+        💭 form html error 403 page
+        🔤<html>
+<head><title>403 Forbidden</title></head>
+<body>
+<center><h1>403 Forbidden</h1></center>
+<hr><center>Emojicode Engine/0.1a (Linux)</center>
+</body>
+</html>🔤 ➡️ error_page
+        
+        ↩️ 🔤HTTP/1.1 403 Forbidden❌r❌nContent-Type: text/html❌r❌n❌r❌n🧲error_page🧲🔤
+    🍉 ➡️ error_403_page
+
+    💭🔜 
+        Function to craft the response and the body
+
+        @param request_header 🔡 (String Object)
+        @return 🔡 (String Object)
+    🔚💭
+    🍇🎍🥡 request_header 🔡 ➡️ 🔡
+
+        💭 split the request header with the ❌r❌n (\r\n) delimiter
+        🔫 request_header 🔤❌r❌n🔤 ❗️ ➡️ request_header_list
+
+        💭💭💭 testing 💭💭💭
+        💭 🔂 name request_header_list 🍇
+        💭     😀 name❗️
+        💭 🍉
+
+        💭 TODO POST
+
+        💭 only process the status line (first line) for now
+        🐽 request_header_list 0❗️ ➡️ status_line
+
+        💭 get individual elements form the status line
+        🔫 status_line 🔤 🔤 ❗️ ➡️ status_line_list
+
+        💭💭💭 testing 💭💭💭
+        💭 🔂 name status_line_list 🍇
+        💭     😀 name❗️
+        💭 🍉    
+
+        💭 check if the status line has the correct format (3 elements)
+        ↪️ 📏 status_line_list ❓ ◀️ 3 🍇
+            😀🔤[!] Invalid header -> 🧲request_header🧲🔤❗️
+            ↩️ 🔤🔤  💭 return empty string
+        🍉
+
+        💭 store status line element into variables
+        
+        🐽 status_line_list 0❗️ ➡️ http_method 
+        🐽 status_line_list 1❗️ ➡️ 🖍🆕path
+        🐽 status_line_list 2❗️ ➡️ http_version
+
+        💭 TODO: verify_http method (GET POST etc.)
+        💭 interpret all http requests as GET for the scope of 
+        💭 ict2206 assignment 2
+
+        💭 verify if path starts with a forward slash
+        ↪️🔍 path 🔤/🔤❗️ 🙌 🤷‍♀️ 🍇
+            😀🔤[!] Invalid Status Line🔤❗️
+            ↩️ ⁉️ error_400_page❗️
+        🍉
+        
+        💭 verify and remove directory traversing symbols from path
+        💭 split line with the / delimiter
+        🔫 path 🔤/🔤 ❗️ ➡️ path_list
+        🔂 path_component path_list 🍇
+        💭 return status 400 if file traversing is detected
+        ↪️ path_component 🙌 🔤..🔤 🍇
+            😀🔤[400] 🧲http_method🧲 🧲path🧲 🧲http_version🧲🔤❗️
+            ↩️ ⁉️ error_400_page❗️
+        🍉
+        🍉
+        
+        💭 set default page to index.html
+        ↪️ path 🙌 🔤/🔤🍇
+            🔤index.html🔤 ➡️ 🖍path
+        🍉
+
+        💭 A TEMPORARY WORKAROUND TO RETURN A 403 STATUS FOR FOLDERS
+        💭 AS READING FOLDERS CAUSES A SEGMENTATION FAULT
+        💭 ***FOLDERS IN LINUX HAS A FILE SIZE OF 4096 BYTES***
+        💭
+        💭 check length of file
+        🆗 file_size 📏🕊📑 🔤🧲WEB_ROOT🧲🧲path🧲🔤❗ 🍇
+            💭😀🔤file size: 🧲file_size🧲🔤❗️
+            ↪️ file_size 🙌 4096 🍇
+                😀🔤[403] 🧲http_method🧲 🧲path🧲 🧲http_version🧲🔤❗️
+                ↩️ ⁉️ error_403_page❗️
+            🍉
+        🍉
+        🙅 error_no_file 🍇
+            😀🔤[400] 🧲http_method🧲 🧲path🧲 🧲http_version🧲🔤❗️
+            ↩️ ⁉️ error_404_page❗️
+        🍉
+
+        💭 read file from directory
+        🆗 file 📇🐇📄🔤🧲WEB_ROOT🧲🧲path🧲🔤❗️ 🍇
+            🍺 🔡 file ❗️ ➡️ file_contents
+            📐file_contents❗️ ➡️ content_length
+            ⛏️ mime_types path❗️ ➡️ mime_type
+            😀🔤[200] 🧲http_method🧲 🧲path🧲 🧲http_version🧲🔤❗️
+            ↩️ 🔤HTTP/1.1 200 OK❌r❌nContent-Length: 🧲content_length🧲❌r❌nContent-Type: 🧲mime_type🧲❌r❌n❌r❌n🧲file_contents🧲🔤 
+        🍉
+        🙅 error_no_file 🍇
+            😀🔤[400] 🧲http_method🧲 🧲path🧲 🧲http_version🧲🔤❗️
+            ↩️ ⁉️ error_404_page❗️
+        🍉
+
+    🍉 ➡️ craft_response
+
+
+    💭🔜 
+        Main entry of the program
+    🔚💭
+    🍇🎍🥡
+        💭 while true
+        🔁 👍 🍇
+        🍺 🙋 SERVER❗️ ➡️ clientSocket
+        
+            🆗 data 👂 clientSocket 10000❗️ 🍇
+                💭 store string interpolation into request_header String variable 
+                🔤🧲🍺 🔡data❗️🧲🔤 ➡️ request_header
+                
+                💭 declare new string interpolation to store response header
+                ⁉️ craft_response request_header❗️ ➡️ response
+
+                💭 We’ve read 500 bytes and send them back
+                🆗💬 clientSocket 📇 response ❗️❗️🍇
+                    💭 do nothing
+                🍉 💭 send response + body
+                🙅 error_client_socket 🍇
+                    😀 🔤An error occurred: 🧲💬 error_client_socket❗️🧲🔤❗️
+                🍉
+            🍉 💭 client socket
+
+            🙅‍♀️ error_data 🍇
+            🍉 💭 else
+
+            💭 close the socket
+            💭🚪 clientSocket ❗️  💭 will cause bad file descriptor
+
+        🍉 💭 while true
+    🍉 ➡️ main
+
+
+    💭🔜 
+        Main execution block
+    🔚💭
+    🆕🍨🐚🧵🍆❗️ ➡️ 🖍🆕threads
+
+    💭 create n workers to serve the clients
+    🔂 i 🆕⏩ 0 512❗️ 🍇
+        🐻 threads 🆕🧵 🍇 🎍🥡
+        ⁉️ main❗️
+        🍉❗️❗️
+    🍉
+
+    💭 wait for threads to finish before the program ends
+    💭 much like thread.join()
+    🔂 thread threads 🍇
+        🛂 thread❗️
+    🍉
+
+🍉
