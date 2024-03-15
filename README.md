@@ -1,5 +1,5 @@
-Execute server with `./emojicode_minigames`.
+Execute server with `./emoji_minigames`.
 
-Build with `make emojicode_minigames` or `make all` to clean up binaries.
+Build with `make emoji_minigames` or `make all` to clean up binaries.
 
 Default port: `8888`
